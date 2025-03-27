@@ -2,9 +2,12 @@
 "use client";
 import {useState,  useTransition } from 'react';
 import { CardWrapper } from "@/components/auth/card-wrapper";
-import { LoginSchema } from "@/schemas";
+import { NewPasswordSchema } from "@/schemas";
 import {useForm} from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod";
+
+import { useSearchParams } from 'next/navigation';
+
 import * as z from "zod";
 
 import {
@@ -19,40 +22,41 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form.success";
-import {login} from "@/actions/login";
-import { useSearchParams } from 'next/navigation';
-import Link from "next/link";
+import {newPassword} from "@/actions/new-password";
 
 
-export const LoginForm = () => {
+
+
+export const NewPasswordForm = () => {
+
+
     const searchParams = useSearchParams();
-   const urlError = searchParams.get("error")==="OAuthAccountNotLinked" ? "email is already linked with different provider" 
-   : "";
-
-
-   const [error, setError] = useState<string|undefined>("");
+    const token = searchParams.get("token");
+  const [error, setError] = useState<string|undefined>("");
     const [success, setSuccess] = useState<string|undefined>("");
 
     const [isPending, startTransition] = useTransition();
 
-    const form = useForm<z.infer<typeof LoginSchema>>({
-        resolver:zodResolver(LoginSchema),
+    const form = useForm<z.infer<typeof  NewPasswordSchema>>({
+        resolver:zodResolver( NewPasswordSchema),
         defaultValues:{
-            email:"",
-            password:"",
+            password:""
+          
         },
     })
 
 
 
 
-const onSubmit = (values:z.infer<typeof LoginSchema>)=>{
+const onSubmit = (values:z.infer<typeof  NewPasswordSchema>)=>{
     setError("");
     setSuccess("");
 
 
+    // console.log(values);
+
     startTransition(()=>{
-        login(values)
+        newPassword(values,token)
         .then((data)=>{
             setError(data.error );
             //todo : add when we add 2FA
@@ -65,10 +69,9 @@ const onSubmit = (values:z.infer<typeof LoginSchema>)=>{
 
     return (
         <CardWrapper
-        headerLabel="welcome back"
-        backButtonLabel="Don't have an account?"
-        backButtonHref="/auth/register"
-        showSocial
+        headerLabel="enter your new password?"
+        backButtonLabel="back to login?"
+        backButtonHref="/auth/login"
         >
             <Form {...form}>
                 <form
@@ -78,53 +81,25 @@ const onSubmit = (values:z.infer<typeof LoginSchema>)=>{
                     <div className="space-y-4">
                         <FormField
                         control={form.control}
-                        name="email"
-                        render={({field})=>(
-                            <FormItem>
-                                <FormLabel>Email</FormLabel>
-                                <FormControl>
-                                    <Input {...field}
-                                    disabled={isPending}
-                                    placeholder="arslan@example.com"
-                                    type="email" />
-                                </FormControl>
-                                <FormMessage/>
-                            </FormItem>
-                        )}
-                        >
-
-                        </FormField>
-                        <FormField
-                        control={form.control}
-                        disabled={isPending}
                         name="password"
                         render={({field})=>(
                             <FormItem>
                                 <FormLabel>Password</FormLabel>
                                 <FormControl>
                                     <Input {...field}
+                                    disabled={isPending}
                                     placeholder="******"
                                     type="password" />
                                 </FormControl>
-                                <Button
-                                size="sm"
-                                variant='link'
-                                asChild
-                                className='px-0 font-normal'
-                                >
-                                    <Link href="/auth/reset">
-                                    Forgot password?
-                                    </Link>
-                    
-                                </Button>
                                 <FormMessage/>
                             </FormItem>
                         )}
                         >
 
                         </FormField>
+                       
                     </div>
-                    <FormError message={error || urlError}/>
+                    <FormError message={error}/>
                     <FormSuccess message={success}/>
                     <Button
                     disabled={isPending}
@@ -133,7 +108,7 @@ const onSubmit = (values:z.infer<typeof LoginSchema>)=>{
 
 
                     >
-                        login In
+                        send reset password
                     </Button>
                         </form>
                     
