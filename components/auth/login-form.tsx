@@ -29,7 +29,7 @@ export const LoginForm = () => {
    const urlError = searchParams.get("error")==="OAuthAccountNotLinked" ? "email is already linked with different provider" 
    : "";
 
-
+    const [showTwoFactor, setShowTwoFactor]=useState(false)
    const [error, setError] = useState<string|undefined>("");
     const [success, setSuccess] = useState<string|undefined>("");
 
@@ -54,10 +54,24 @@ const onSubmit = (values:z.infer<typeof LoginSchema>)=>{
     startTransition(()=>{
         login(values)
         .then((data)=>{
-            setError(data.error );
-            //todo : add when we add 2FA
-            setSuccess(data?.success )
+            // setError(data.error );
+            // //todo : add when we add 2FA
+            // setSuccess(data?.success )
+            if(data?.error){
+                form.reset();
+                  setError(data.error );
+            }
+
+            if(data?.success){
+                form.reset();
+                  setSuccess(data.success );
+            }
+
+            if(data?.twoFactor){
+                setShowTwoFactor(true);
+            }
         })
+        .catch(()=>setError("something went wrong"))
     })
     
 }
@@ -76,6 +90,29 @@ const onSubmit = (values:z.infer<typeof LoginSchema>)=>{
                    className="space-y-2" 
                     >
                     <div className="space-y-4">
+
+                        {showTwoFactor && (
+                            <FormField
+                            control={form.control}
+                            name="code"
+                            render={({field})=>(
+                                <FormItem>
+                                    <FormLabel>two factor code</FormLabel>
+                                    <FormControl>
+                                        <Input {...field}
+                                        disabled={isPending}
+                                        placeholder="123456"
+                                      />
+                                    </FormControl>
+                                    <FormMessage/>
+                                </FormItem>
+                            )}
+                            >
+    
+                            </FormField>
+                        )}
+                    {!showTwoFactor && (
+                        <>
                         <FormField
                         control={form.control}
                         name="email"
@@ -120,9 +157,14 @@ const onSubmit = (values:z.infer<typeof LoginSchema>)=>{
                                 <FormMessage/>
                             </FormItem>
                         )}
-                        >
+                        
+                        />
+                        </>
+                        )}
 
-                        </FormField>
+                        
+                        
+
                     </div>
                     <FormError message={error || urlError}/>
                     <FormSuccess message={success}/>
@@ -133,7 +175,7 @@ const onSubmit = (values:z.infer<typeof LoginSchema>)=>{
 
 
                     >
-                        login In
+                        {showTwoFactor ? "confirm":"login"}
                     </Button>
                         </form>
                     

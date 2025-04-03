@@ -11,12 +11,13 @@
 import NextAuth from "next-auth"
 import authConfig from "./auth.config"
 
+
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import { db } from "./lib/db"
 import { getUserById } from "./Data/user"
 import { UserRole } from "@prisma/client"
 
-
+import { getTwoFactorConfirmationByUserId } from "@/Data/two-factor-confirmation"
 
 
  
@@ -61,9 +62,22 @@ events:{
         if (!existingUser?.emailVerified) return false;
         
         // Add 2FA check TODO
-        
-    
-        return true;
+        if(existingUser.isTwoFactorEnabled){
+          const  twoFactorConfirmation= await getTwoFactorConfirmationByUserId(existingUser.id)
+
+
+         // console.log({twoFactorConfirmation})
+         
+
+          if(!twoFactorConfirmation) return false;
+
+
+          //delete two factor confrimation for next sign in
+          await db.twoFactorConfirmation.delete({
+            where:{id:twoFactorConfirmation.id}
+          });
+        }
+            return true;
     },
     
       // async signIn({user}){

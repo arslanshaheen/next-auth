@@ -25,6 +25,8 @@ model User {
   role          UserRole  @default(USER)
   image         String?
   accounts      Account[]
+  isTwoFactorEnabled Boolean @default(false)
+  twoFactorConfirmation TwoFactorConfirmation?
  
  
  
@@ -68,4 +70,23 @@ id String @id @default(cuid())
   expires  DateTime
 
   @@unique([email, token])
+}
+
+
+
+model  TwoFactorToken {
+id String @id @default(cuid())
+  email String
+  token String  @unique
+  expires  DateTime
+
+  @@unique([email, token])
+}
+
+model TwoFactorConfirmation {
+  id String  @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+   @@unique([userId])
 }
