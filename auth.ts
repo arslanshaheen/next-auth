@@ -18,6 +18,7 @@ import { getUserById } from "./Data/user"
 import { UserRole } from "@prisma/client"
 
 import { getTwoFactorConfirmationByUserId } from "@/Data/two-factor-confirmation"
+import { getAccountByUserId } from "./Data/account"
 
 
  
@@ -110,13 +111,30 @@ events:{
         if(session.user){
           session.user.isTwoFactorEnabled=token.isTwoFactorEnabled as boolean
       }
+
+      //name change 
+      if(session.user){
+        session.user.name=token.name;
+        session.user.email=token.email
+        session.user.isOAuth=token.isOAuth as boolean
+      }
             return session;
           },
 
         async jwt({token}){
+          console.log('i am being call here')
           if(!token.sub) return token;
           const existingUser=await getUserById(token.sub);
           if(!existingUser) return token;
+
+          const existingAccount=await getAccountByUserId(
+            existingUser.id
+          )
+          
+
+          token.isOAuth=!!existingAccount
+          token.name=existingUser.name
+          token.email=existingUser.email
             // console.log({token})
             // token.custumField="TEST"
             token.role=existingUser.role;
