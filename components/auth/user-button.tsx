@@ -31,7 +31,7 @@ import { ExitIcon } from "@radix-ui/react-icons";
                     <DropdownMenuSeparator/>
                     <DropdownMenuItem>Profile</DropdownMenuItem>
                     <DropdownMenuItem>Settings</DropdownMenuItem>
-                    <DropdownMenuItem><ExitIcon className="h-4 w-4 mr-2"/>Logout</DropdownMenuItem>
+                    <DropdownMenuItem><ExitIcon className="h-4 w-4 mr-2"/><LogoutButton>logout</LogoutButton></DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
         )
