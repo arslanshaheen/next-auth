@@ -25,7 +25,7 @@ export default function Home() {
         <div>
        
           
-          <LoginButton>
+          <LoginButton mode='model' asChild>
           <Button variant="secondary" size="lg">Sign In</Button>
           </LoginButton>
         </div>

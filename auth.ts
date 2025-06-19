@@ -23,7 +23,7 @@ import { getAccountByUserId } from "./Data/account"
 
  
 export const 
-{ auth, handlers, signIn, signOut } 
+{ auth, handlers, signIn, signOut, } 
 = NextAuth({
    pages:{
     signIn:"/auth/login",

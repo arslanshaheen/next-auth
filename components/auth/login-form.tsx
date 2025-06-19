@@ -26,6 +26,7 @@ import Link from "next/link";
 
 export const LoginForm = () => {
     const searchParams = useSearchParams();
+    const callbackUrl=searchParams.get("callbackUrl")
    const urlError = searchParams.get("error")==="OAuthAccountNotLinked" ? "email is already linked with different provider" 
    : "";
 
@@ -52,7 +53,7 @@ const onSubmit = (values:z.infer<typeof LoginSchema>)=>{
 
 
     startTransition(()=>{
-        login(values)
+        login(values, callbackUrl)
         .then((data)=>{
             // setError(data.error );
             // //todo : add when we add 2FA

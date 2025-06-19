@@ -56,7 +56,7 @@
 import { useTransition,useState } from "react";
 import { settings } from "@/actions/settings";
 import { Button } from "@/components/ui/button";
-import { useSession } from "next-auth/react";
+ import { useSession } from "next-auth/react";
 import {useForm} from 'react-hook-form'
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SettingsSchema } from "@/schemas";
@@ -97,7 +97,7 @@ const SettingsPage = () => {
   const user=useCurrentUser()
   const [error ,setError]=useState<string | undefined>();
   const [success ,setSuccess]=useState<string | undefined>();
-  const {update}=useSession()
+   const {update}=useSession()
 const [isPending, startTransition]=useTransition()
 
 const form = useForm<z.infer<typeof SettingsSchema>>({
@@ -107,7 +107,8 @@ const form = useForm<z.infer<typeof SettingsSchema>>({
     newPassword:undefined,
     name:user?.name || undefined,
     email:user?.email || undefined,
-    role:user?.role || undefined
+    role:user?.role || undefined,
+    isTwoFactorEnabled:user?.isTwoFactorEnabled || undefined
   }
 })
 
