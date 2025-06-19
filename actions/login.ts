@@ -14,7 +14,7 @@ import {
 } from '@/lib/mail'
 import { getTwoFactorConfirmationByUserId } from "@/Data/two-factor-confirmation"
 import { getTwoFactorTokenByEmail } from "@/Data/two-factor-token"
-import { error } from "console"
+
 import { db } from "@/lib/db"
 export const login = async (values: z.infer<typeof LoginSchema>,callbackUrl?:string,) => {
     const validatedFields = LoginSchema.safeParse(values)

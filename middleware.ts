@@ -19,7 +19,7 @@ export default  auth((req) => {
   const isProtectedRoute = nextUrl.pathname.startsWith(DEFAULT_LOGIN_REDIRECT);
 
   if (isApiAuthRoute){
-      return null;
+      return undefined;
   }
 
   // If user is on a protected route and not logged in, redirect to login
@@ -31,7 +31,7 @@ export default  auth((req) => {
       if(isLoggedIn){
           return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
      }
-     return null;
+     return undefined;
   }
 
   if(!isPublicRoute && !isLoggedIn){
@@ -43,7 +43,7 @@ export default  auth((req) => {
     const encodedCallback=encodeURIComponent(callbackUrl)
       return Response.redirect(new URL(`/auth/login?callbackUrl=${encodedCallback}`, nextUrl));
   }
-  return null;
+  return undefined;
 }) 
 
 

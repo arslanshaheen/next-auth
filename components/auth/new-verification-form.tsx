@@ -32,6 +32,7 @@ export const NewVerificationForm = () => {
         .then((data)=>{
             setError(data.error)
             setSuccess(data.success)
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         }).catch((error)=>{
             setError("something went wrong!")
         })
